@@ -1,0 +1,19 @@
+version: "3.6"
+services:
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - $HOME/mongo:/data/db
+    healthcheck:
+      test: "exist 0"
+
+  autoclub156:
+    build: .
+    depends_on:
+      - mongo
+    ports:
+      - 8080:8080
+    healthcheck:
+      test: "exist 0"
