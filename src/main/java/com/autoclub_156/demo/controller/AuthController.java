@@ -8,6 +8,7 @@ import com.autoclub_156.demo.model.User;
 import com.autoclub_156.demo.security.jwt.JwtProvider;
 import com.autoclub_156.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +25,11 @@ public class AuthController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @GetMapping({"/"})
+    public String getMainPage() {
+        return "Main page got";
+    }
 
     @PostMapping({"/register"})
     public String registerUser(@RequestBody @Valid RegistrationRequest registrationRequest)
