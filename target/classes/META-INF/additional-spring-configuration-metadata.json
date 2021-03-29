@@ -4,10 +4,5 @@
       "name": "security.require-ssl",
       "type": "java.lang.String",
       "description": "Description for security.require-ssl."
-    },
-    {
-      "name": "security.require-ssl",
-      "type": "java.lang.String",
-      "description": "Description for security.require-ssl."
-    }
-  ] }
+  }
+] }

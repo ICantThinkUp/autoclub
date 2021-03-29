@@ -8,6 +8,7 @@ import com.autoclub_156.demo.model.User;
 import com.autoclub_156.demo.security.jwt.JwtProvider;
 import com.autoclub_156.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,25 +32,23 @@ public class AuthController {
         return "Main page got";
     }
 
-    @PostMapping({"/register"})
-    public String registerUser(@RequestBody @Valid RegistrationRequest registrationRequest)
+    @PostMapping({"/signup"})
+    public ResponseEntity signUp(@RequestBody @Valid RegistrationRequest registrationRequest)
     {
         if (userService.isLoginUsed(registrationRequest.getLogin())) {
-             return "Логин занят";
+             return ResponseEntity.badRequest().build(); // логин занят
         }
-        return "OK";
-        //User user = new User();
-       // user.setPassword(registrationRequest.getPassword());
-        //user.setLogin(registrationRequest.getLogin());
-       // userService.saveUser(user);
-        //return "OK";
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping({"/auth"})
-    public AuthResponse auth(@RequestBody AuthRequest request) {
+    @PostMapping({"/signin"})
+    public ResponseEntity signIn(@RequestBody AuthRequest request) {
         User user = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
+        if (user == null) {
+            return ResponseEntity.badRequest().build(); // пользователь не существует
+        }
         String token = jwtProvider.generateToken(user.getLogin(), userRepository);
-        return new AuthResponse(token);
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 
 
