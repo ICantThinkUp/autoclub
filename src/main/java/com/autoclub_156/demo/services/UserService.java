@@ -9,11 +9,15 @@ import com.autoclub_156.demo.model.User;
 import com.autoclub_156.demo.security.CustomUserDetails;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 @Service
@@ -46,7 +50,8 @@ public class UserService {
     }
 
     public User findByLogin(String login) {
-        return userRepository.findByLogin(login);
+        User user = userRepository.findByLogin(login);
+        return user;
     }
 
     public User findByLoginAndPassword(String login, String password) {
@@ -108,5 +113,72 @@ public class UserService {
         }
 
         return cars.stream().anyMatch(x -> x.getVincode().equals(vincode)) || false;
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public String getLoginOfSender(HttpServletRequest request) {
+        Authentication auth = (Authentication) request.getUserPrincipal();
+        CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
+        return customUserDetails.getUsername();
+    }
+
+    public void editName(String login, String newName) {
+        User user = findByLogin(login);
+        user.setName(newName);
+        userRepository.save(user);
+    }
+
+    public boolean isSenderSameUser(HttpServletRequest request, String login) {
+        String loginOfSender = getLoginOfSender(request);
+        if (!login.equals(loginOfSender)) {
+            return false;
+        }
+        return true;
+    }
+
+    public void editContactNumber(String login, String contactNumber) {
+        User user = findByLogin(login);
+        user.setContactNumber(contactNumber);
+        userRepository.save(user);
+    }
+
+    public void editEmail(String login, String email) {
+        User user = findByLogin(login);
+        user.setContactNumber(email);
+        userRepository.save(user);
+    }
+
+    public boolean isAdmin(HttpServletRequest request) {
+        Authentication auth = (Authentication) request.getUserPrincipal();
+        CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
+        String userRole = customUserDetails.getRole().getName();
+        if (userRole.equalsIgnoreCase("ROLE_ADMIN")) {
+            return true;
+        }
+        return false;
+    }
+
+    public void addCar(String login, String vincode) {
+        User user = userRepository.findByLogin(login);
+        ArrayList<Car> cars = user.getCars();
+        Car newCar = carRepository.getCarByVincode(vincode);
+        cars.add(newCar);
+        userRepository.save(user);
+    }
+
+    public void deleteCar(String login, String vincode) {
+        User user = userRepository.findByLogin(login);
+        ArrayList<Car> cars = user.getCars();
+        Car deletingCar = carRepository.getCarByVincode(vincode);
+        cars.add(deletingCar);
+        userRepository.save(user);
+    }
+
+    public void deleteUser(String login) {
+        User user = userRepository.findByLogin(login);
+        userRepository.delete(user);
     }
 }

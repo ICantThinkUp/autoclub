@@ -1,6 +1,7 @@
 package com.autoclub_156.demo.security;
 
 import com.autoclub_156.demo.model.Car;
+import com.autoclub_156.demo.model.Role;
 import com.autoclub_156.demo.model.User;
 import lombok.extern.java.Log;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,6 +17,7 @@ public class CustomUserDetails implements UserDetails {
     private String login;
     private String password;
     private ArrayList<Car> cars;
+    private Role role;
 
     private Collection<? extends GrantedAuthority> grantedAuthorities;
 
@@ -24,6 +26,7 @@ public class CustomUserDetails implements UserDetails {
         u.login = user.getLogin();
         u.password = user.getPassword();
         u.cars = user.getCars();
+        u.role = user.getRole();
 
         u.grantedAuthorities = Collections.singletonList(
                 new SimpleGrantedAuthority(user.getRole().getName())
@@ -39,6 +42,10 @@ public class CustomUserDetails implements UserDetails {
     public String toString() {
         return String.format("login: %s, password: %s, cars: %s",
                 login, password, cars);
+    }
+
+    public Role getRole() {
+        return role;
     }
 
     @Override
