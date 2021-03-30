@@ -31,14 +31,17 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public User saveUser(User user) {
+    public User saveUser(String login, String password) {
+        User user = new User();
         Role userRole = roleRepository.findRoleByName("ROLE_USER");
         user.setRole(userRole);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setLogin(login);
+        user.setPassword(passwordEncoder.encode(password));
         return userRepository.save(user);
     }
 
     public Boolean isLoginUsed(String login) {
+        System.out.println(userRepository.findByLogin(login));
         return userRepository.findByLogin(login) != null;
     }
 

@@ -9,13 +9,12 @@ import com.autoclub_156.demo.security.jwt.JwtProvider;
 import com.autoclub_156.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 
 @RestController
+@RequestMapping(path = "/")
 public class AuthController {
 
     @Autowired
@@ -27,27 +26,36 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping({"/"})
+    @GetMapping("/")
     public String getMainPage() {
         return "Main page got";
     }
 
-    @PostMapping({"/signup"})
+    @PostMapping("/signup")
     public ResponseEntity signUp(@RequestBody @Valid RegistrationRequest registrationRequest)
     {
         if (userService.isLoginUsed(registrationRequest.getLogin())) {
-             return ResponseEntity.badRequest().build(); // логин занят
+            System.out.println("Login exist");
+            System.out.println(registrationRequest.getLogin());
+            return ResponseEntity.badRequest().build(); // логин занят
         }
+        System.out.println("Signup comp");
+
+        System.out.println(registrationRequest.getLogin());
+        userService.saveUser(registrationRequest.getLogin(), registrationRequest.getPassword());
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping({"/signin"})
+    @PostMapping("/signin")
     public ResponseEntity signIn(@RequestBody AuthRequest request) {
         User user = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
         if (user == null) {
+            System.out.println("User dont exist");
             return ResponseEntity.badRequest().build(); // пользователь не существует
         }
         String token = jwtProvider.generateToken(user.getLogin(), userRepository);
+        System.out.println("Signin complete, token ");
+        System.out.println(token);
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
