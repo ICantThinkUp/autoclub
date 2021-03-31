@@ -28,6 +28,8 @@ public class DemoApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
+        System.out.println("VERSION 1");
+
         roleRepository.deleteAll();
 
         roleRepository.save(new Role("ROLE_ADMIN"));
