@@ -3,6 +3,7 @@ package com.autoclub_156.demo;
 import com.autoclub_156.demo.interfaces.RoleRepository;
 import com.autoclub_156.demo.interfaces.UserRepository;
 import com.autoclub_156.demo.model.Role;
+import com.autoclub_156.demo.model.User;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -28,15 +29,13 @@ public class DemoApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        System.out.println("VERSION 2");
+        System.out.println("VERSION 3");
 
-        //roleRepository.deleteAll();
+        roleRepository.deleteAll();
 
         roleRepository.save(new Role("ROLE_ADMIN"));
 
         roleRepository.save(new Role("ROLE_USER"));
-
-        System.out.println("Work");
 
         System.out.println("Roles");
         System.out.println(roleRepository.findAll());

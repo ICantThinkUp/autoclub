@@ -34,8 +34,8 @@ public class User {
     private Boolean isVerefiedContact;
     private Boolean isVerefiedEmail;
 
-    public User(String name, String contactNumber) {
-        this.name = name;
+    public User(String login, String contactNumber) {
+        this.login = login;
         this.contactNumber = contactNumber;
         this.cars = new ArrayList<>();
     }
