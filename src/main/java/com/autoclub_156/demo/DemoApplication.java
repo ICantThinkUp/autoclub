@@ -11,6 +11,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
+import java.util.List;
+
 @SpringBootApplication
 public class DemoApplication implements CommandLineRunner {
 
@@ -29,13 +31,16 @@ public class DemoApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        System.out.println("VERSION 3");
+        Role role_admin = roleRepository.findRoleByName("ROLE_ADMIN");
+        List<User> users = userRepository.findAll();
 
-        roleRepository.deleteAll();
+        for (int i = 0; i < users.size(); i++) {
+            users.get(i).setRole(role_admin);
+            userRepository.save(users.get(i));
+        }
 
-        roleRepository.save(new Role("ROLE_ADMIN"));
-
-        roleRepository.save(new Role("ROLE_USER"));
+        System.out.println("User repositry");
+        System.out.println(userRepository.findAll());
 
         System.out.println("Roles");
         System.out.println(roleRepository.findAll());
