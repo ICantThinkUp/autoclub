@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,23 +21,22 @@ public class UserController {
     @Autowired UserService userService;
 
     @GetMapping("/users")
-    private List<User> getUsers() {
-        return userService.getAllUsers();
+    private ResponseEntity<List<User>> getUsers() {
+        return ResponseEntity.status(200).body(userService.getAllUsers());
     }
 
     @GetMapping("/user/{login}")
-    private User getUser(@PathVariable String login) {
-        return userService.findByLogin(login);
+    private ResponseEntity<User> getUser(@PathVariable String login) {
+        return ResponseEntity.status(200).body(userService.findByLogin(login));
     }
 
     @PutMapping("/user/{login}/name")
-    private ResponseEntity updateUsername(HttpServletRequest request, @PathVariable String login, @RequestBody String newName) {
-        String loginOfSender = userService.getLoginOfSender(request);
-        if (!login.equals(loginOfSender)) {
-            return ResponseEntity.badRequest().build();
+    private ResponseEntity updateUsername(HttpServletRequest request, @PathVariable String login, @RequestBody String name) {
+        if (userService.isSenderSameUser(request, login)) {
+            return ResponseEntity.status(400).build();
         }
         try {
-            userService.editName(login, newName);
+            userService.editName(login, name);
             return ResponseEntity.ok().build();
         } catch (Exception ex) {
             return ResponseEntity.status(500).build();

@@ -35,27 +35,19 @@ public class AuthController {
     public ResponseEntity signUp(@RequestBody @Valid RegistrationRequest registrationRequest)
     {
         if (userService.isLoginUsed(registrationRequest.getLogin())) {
-            System.out.println("Login exist");
-            System.out.println(registrationRequest.getLogin());
-            return ResponseEntity.badRequest().build(); // логин занят
+            return ResponseEntity.status(406).build(); // логин занят
         }
-        System.out.println("Signup comp");
-
-        System.out.println(registrationRequest.getLogin());
         userService.saveUser(registrationRequest.getLogin(), registrationRequest.getPassword());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(201).build();
     }
 
     @PostMapping("/signin")
     public ResponseEntity signIn(@RequestBody AuthRequest request) {
         User user = userService.findByLoginAndPassword(request.getLogin(), request.getPassword());
         if (user == null) {
-            System.out.println("User dont exist");
-            return ResponseEntity.badRequest().build(); // пользователь не существует
+            return ResponseEntity.status(401).build(); // пользователь не существует либо пароль неверный
         }
         String token = jwtProvider.generateToken(user.getLogin(), userRepository);
-        System.out.println("Signin complete, token ");
-        System.out.println(token);
         return ResponseEntity.ok(new AuthResponse(token));
     }
 
