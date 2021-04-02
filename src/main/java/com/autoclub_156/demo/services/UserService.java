@@ -47,6 +47,10 @@ public class UserService {
 
     public Boolean changePassword(String login, String oldPassword, String newPassword) {
         User user = findByLoginAndPassword(login, oldPassword);
+        System.out.println("login");
+        System.out.println(login);
+        System.out.println("oldPassword");
+        System.out.println(oldPassword);
         if (user != null) {
             user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
@@ -73,36 +77,6 @@ public class UserService {
             }
         }
         return null;
-    }
-
-    public Boolean bindCar(String vincode, String login) {
-        User user = userRepository.findByLogin(login);
-        Car car = carRepository.getCarByVincode(vincode);
-
-        ArrayList<Car> cars = (user.getCars() == null) ? new ArrayList<Car>() : user.getCars();
-
-        if (cars.contains(car)) {
-            return false;
-        }
-        cars.add(car);
-
-        user.setCars(cars);
-        userRepository.save(user);
-        return true;
-
-    }
-
-    public Boolean unbundCar(String vincode, String login) {
-        User user = userRepository.findByLogin(login);
-        for (int i = 0; i < user.getCars().size(); i++) {
-            Car boundCar = user.getCars().get(i);
-            if (boundCar.getVincode().equals(vincode)) {
-                user.getCars().remove(boundCar);
-                userRepository.save(user);
-                return true;
-            }
-        }
-        return false;
     }
 
     public ArrayList<Car> getCarsByLogin(String login) {
@@ -141,12 +115,8 @@ public class UserService {
 
     public String getLoginOfSender(HttpServletRequest request) throws NullPointerException {
         Authentication auth = (Authentication) request.getUserPrincipal();
-        System.out.println("auth");
-        System.out.println(auth);
-        CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
-        System.out.println("customUserDetails");
-        System.out.println(customUserDetails);
 
+        CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
 
         return customUserDetails.getUsername();
     }

@@ -74,14 +74,4 @@ public class CarController {
         return carService.deleteCar(vincode);
     }
 
-    @PostMapping("/admin/bindCar")
-    public Boolean bindCar(@RequestBody BindCarRequest request) {
-        return userService.bindCar(request.getVincode(), request.getLogin());
-    }
-
-    @PostMapping("/admin/unbindCar")
-    public Boolean unbindCar(@RequestBody BindCarRequest request) {
-        return userService.unbundCar(request.getVincode(), request.getLogin());
-    }
-
 }

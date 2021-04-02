@@ -55,6 +55,7 @@ public class UserController {
         if (!userService.isSenderSameUser(request, login)) {
             ResponseEntity.status(403).build();
         }
+        System.out.println("Try to change password...");
         Boolean isChangedPassword = userService.changePassword(login, passwords.oldPassword, passwords.newPassword);
         if (isChangedPassword) {
             return ResponseEntity.ok().build();
