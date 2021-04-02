@@ -31,6 +31,7 @@ public class DemoApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
+        System.out.println("Version3");
         System.out.println("User repositry");
         System.out.println(userRepository.findAll());
 
