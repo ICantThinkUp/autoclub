@@ -33,8 +33,8 @@ public class SecurityCofigurer extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/admin/*", "/users").hasRole("ADMIN")
-                .antMatchers("/user/*", "/user*").hasRole("USER")
+                .antMatchers("/admin/*").hasRole("ADMIN")
+                .antMatchers("/user/*", "/user*").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/signup", "/signin").permitAll()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

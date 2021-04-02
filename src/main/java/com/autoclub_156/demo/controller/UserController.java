@@ -31,7 +31,13 @@ public class UserController {
 
     @GetMapping("/user/{login}")
     private ResponseEntity<UserResponse> getUser(@PathVariable String login) {
+        System.out.println("get the user run");
+
         User user = userService.findByLogin(login);
+
+        System.out.println("user is");
+        System.out.println(user);
+
         return ResponseEntity.status(200).body(new UserResponse(user.getLogin(),
                 user.getName(), user.getEmail(), user.getEmail()));
     }
@@ -112,10 +118,13 @@ public class UserController {
 
     @DeleteMapping("/user/{login}")
     private ResponseEntity deleteUser(HttpServletRequest request, @PathVariable String login) {
+        System.out.println("delete the user run");
+
         if (userService.isSenderSameUser(request, login) || userService.isAdmin(request)) {
             userService.deleteUser(login);
             return ResponseEntity.ok().build();
         }
+        System.out.println("Delete user не прошел по условию на того же юзера или админа");
         return ResponseEntity.status(403).build();
     }
 }

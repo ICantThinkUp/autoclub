@@ -47,18 +47,13 @@ public class UserService {
 
     public Boolean changePassword(String login, String oldPassword, String newPassword) {
         User user = findByLoginAndPassword(login, oldPassword);
-        System.out.println("login");
-        System.out.println(login);
-        System.out.println("oldPassword");
-        System.out.println(oldPassword);
-        System.out.println(user);
-        if (user != null) {
-            System.out.println("user not null");
 
+        if (user != null) {
             user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
             return true;
         }
+
         return false;
     }
 
@@ -153,7 +148,7 @@ public class UserService {
 
     public void editEmail(String login, String email) {
         User user = findByLogin(login);
-        user.setContactNumber(email);
+        user.setEmail(email);
         userRepository.save(user);
     }
 
