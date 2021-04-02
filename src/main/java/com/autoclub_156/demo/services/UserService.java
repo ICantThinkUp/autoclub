@@ -139,15 +139,15 @@ public class UserService {
         return preparedUser;
     }
 
-    public String getLoginOfSender(HttpServletRequest request) {
-        if (request == null) {
-            System.out.println("Request is null");
-            return "Req";
-        }
+    public String getLoginOfSender(HttpServletRequest request) throws NullPointerException {
         Authentication auth = (Authentication) request.getUserPrincipal();
+        System.out.println("auth");
+        System.out.println(auth);
         CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
-        Logger.getLogger("customUserDetails");
-        Logger.getLogger(customUserDetails.getUsername());
+        System.out.println("customUserDetails");
+        System.out.println(customUserDetails);
+
+
         return customUserDetails.getUsername();
     }
 
@@ -158,11 +158,18 @@ public class UserService {
     }
 
     public boolean isSenderSameUser(HttpServletRequest request, String login) {
-        String loginOfSender = getLoginOfSender(request); // null
-        if (!login.equals(loginOfSender)) {
+        String loginOfSender;
+        try {
+            loginOfSender = getLoginOfSender(request);
+            if (!login.equals(loginOfSender)) {
+                return false;
+            }
+            return true;
+        } catch (NullPointerException ex) {
+            System.out.println("request");
+            System.out.println(request);
             return false;
         }
-        return true;
     }
 
     public void editContactNumber(String login, String contactNumber) {
