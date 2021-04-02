@@ -1,6 +1,8 @@
 package com.autoclub_156.demo.controller;
 
 import com.autoclub_156.demo.controller.requests.ChangePasswordRequest;
+import com.autoclub_156.demo.controller.responses.BindCarToUserResponse;
+import com.autoclub_156.demo.controller.responses.UpdateUsernameResponse;
 import com.autoclub_156.demo.controller.responses.UserResponse;
 import com.autoclub_156.demo.interfaces.UserRepository;
 import com.autoclub_156.demo.model.Car;
@@ -35,12 +37,12 @@ public class UserController {
     }
 
     @PutMapping("/user/{login}/name")
-    private ResponseEntity updateUsername(HttpServletRequest request, @PathVariable String login, @RequestBody String name) {
+    private ResponseEntity updateUsername(HttpServletRequest request, @PathVariable String login, @RequestBody UpdateUsernameResponse updateUsernameResponse) {
         if (!userService.isSenderSameUser(request, login)) {
             return ResponseEntity.status(403).build();
         }
         try {
-            userService.editName(login, name);
+            userService.editName(login, updateUsernameResponse.name);
             return ResponseEntity.ok().build();
         } catch (Exception ex) {
             return ResponseEntity.status(500).build();
@@ -61,18 +63,18 @@ public class UserController {
     }
 
     @PutMapping("/user/{login}/contactNumber")
-    private ResponseEntity updateContactNumber(HttpServletRequest request, @PathVariable String login, @RequestBody String contactNumber) {
+    private ResponseEntity updateContactNumber(HttpServletRequest request, @PathVariable String login, @RequestBody UserResponse userResponse) {
         if (userService.isSenderSameUser(request, login)) {
-            userService.editContactNumber(login, contactNumber);
+            userService.editContactNumber(login, userResponse.contactNumber);
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(403).build();
     }
 
     @PutMapping("/user/{login}/email")
-    private ResponseEntity updateEmail(HttpServletRequest request, @PathVariable String login, @RequestBody String email) {
+    private ResponseEntity updateEmail(HttpServletRequest request, @PathVariable String login, @RequestBody UserResponse userResponse) {
         if (userService.isSenderSameUser(request, login)) {
-            userService.editEmail(login, email);
+            userService.editEmail(login, userResponse.email);
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(403).build();
@@ -89,9 +91,9 @@ public class UserController {
 
     // привязка существубщей машины к пользователю
     @PutMapping("/user/{login}/car/{vincode}")
-    private ResponseEntity addCar(HttpServletRequest request, @PathVariable String login, String vincode) {
+    private ResponseEntity addCar(HttpServletRequest request, @PathVariable BindCarToUserResponse bindCarToUserResponse) {
         if (userService.isAdmin(request)) {
-            userService.addCar(login, vincode);
+            userService.addCar(bindCarToUserResponse.login, bindCarToUserResponse.vincode);
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(403).build();
@@ -99,9 +101,9 @@ public class UserController {
 
     // отвязка машины от пользователя
     @DeleteMapping("/user/{login}/car/{vincode}")
-    private ResponseEntity deleteCar(HttpServletRequest request, @PathVariable String login, String vincode) {
+    private ResponseEntity deleteCar(HttpServletRequest request, @PathVariable BindCarToUserResponse bindCarToUserResponse) {
         if (userService.isAdmin(request)) {
-            userService.deleteCar(login, vincode);
+            userService.deleteCar(bindCarToUserResponse.login, bindCarToUserResponse.vincode);
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(403).build();

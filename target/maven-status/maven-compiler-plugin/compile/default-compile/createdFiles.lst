@@ -1,8 +1,10 @@
+com/autoclub_156/demo/controller/responses/UpdateUsernameResponse.class
 com/autoclub_156/demo/controller/responses/AuthResponse.class
 com/autoclub_156/demo/services/UserService.class
 com/autoclub_156/demo/interfaces/RoleRepository.class
 com/autoclub_156/demo/model/Role.class
 com/autoclub_156/demo/controller/UserController.class
+com/autoclub_156/demo/controller/responses/BindCarToUserResponse.class
 com/autoclub_156/demo/DemoApplication.class
 com/autoclub_156/demo/interfaces/CarRepository.class
 com/autoclub_156/demo/model/ServiceEntry.class

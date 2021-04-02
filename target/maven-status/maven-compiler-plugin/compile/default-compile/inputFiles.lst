@@ -11,6 +11,8 @@
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/model/Car.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/responses/UserResponse.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/interfaces/CarRepository.java
+/home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/responses/UpdateUsernameResponse.java
+/home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/responses/BindCarToUserResponse.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/DemoApplication.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/model/Role.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/services/CarService.java
