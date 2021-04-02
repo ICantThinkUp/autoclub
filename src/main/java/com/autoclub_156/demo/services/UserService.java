@@ -140,8 +140,14 @@ public class UserService {
     }
 
     public String getLoginOfSender(HttpServletRequest request) {
+        if (request == null) {
+            System.out.println("Request is null");
+            return "Req";
+        }
         Authentication auth = (Authentication) request.getUserPrincipal();
         CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
+        Logger.getLogger("customUserDetails");
+        Logger.getLogger(customUserDetails.getUsername());
         return customUserDetails.getUsername();
     }
 
@@ -152,7 +158,7 @@ public class UserService {
     }
 
     public boolean isSenderSameUser(HttpServletRequest request, String login) {
-        String loginOfSender = getLoginOfSender(request);
+        String loginOfSender = getLoginOfSender(request); // null
         if (!login.equals(loginOfSender)) {
             return false;
         }
