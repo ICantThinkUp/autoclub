@@ -51,7 +51,10 @@ public class UserService {
         System.out.println(login);
         System.out.println("oldPassword");
         System.out.println(oldPassword);
+        System.out.println(user);
         if (user != null) {
+            System.out.println("user not null");
+
             user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
             return true;
