@@ -36,7 +36,7 @@ public class UserController {
 
     @PutMapping("/user/{login}/name")
     private ResponseEntity updateUsername(HttpServletRequest request, @PathVariable String login, @RequestBody String name) {
-        if (userService.isSenderSameUser(request, login)) {
+        if (!userService.isSenderSameUser(request, login)) {
             return ResponseEntity.status(403).build();
         }
         try {
