@@ -13,6 +13,7 @@ com/autoclub_156/demo/controller/CarController.class
 com/autoclub_156/demo/security/SecurityCofigurer.class
 com/autoclub_156/demo/security/jwt/JwtProvider.class
 com/autoclub_156/demo/controller/requests/AuthRequest.class
+com/autoclub_156/demo/controller/requests/ChangePasswordRequest.class
 com/autoclub_156/demo/controller/requests/BindCarRequest.class
 com/autoclub_156/demo/controller/requests/AddRecordRequest.class
 com/autoclub_156/demo/security/jwt/JwtFilter.class
@@ -23,5 +24,6 @@ com/autoclub_156/demo/controller/ServiceEntryController.class
 com/autoclub_156/demo/controller/AuthController.class
 com/autoclub_156/demo/interfaces/ServiceEntryRepository.class
 com/autoclub_156/demo/security/CustomUserDetails.class
+com/autoclub_156/demo/controller/responses/UserResponse.class
 com/autoclub_156/demo/controller/requests/RegistrationRequest.class
 com/autoclub_156/demo/security/CustomUserDetailsService.class

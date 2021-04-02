@@ -2,12 +2,14 @@
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/AuthController.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/model/User.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/interfaces/ServiceEntryRepository.java
+/home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/requests/ChangePasswordRequest.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/responses/AuthResponse.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/UserController.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/interfaces/RoleRepository.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/requests/RegistrationRequest.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/services/ServiceEntryService.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/model/Car.java
+/home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/responses/UserResponse.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/interfaces/CarRepository.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/DemoApplication.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/model/Role.java

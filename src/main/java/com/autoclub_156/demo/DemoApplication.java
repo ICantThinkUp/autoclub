@@ -31,14 +31,6 @@ public class DemoApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        Role role_admin = roleRepository.findRoleByName("ROLE_ADMIN");
-        List<User> users = userRepository.findAll();
-
-        for (int i = 0; i < users.size(); i++) {
-            users.get(i).setRole(role_admin);
-            userRepository.save(users.get(i));
-        }
-
         System.out.println("User repositry");
         System.out.println(userRepository.findAll());
 

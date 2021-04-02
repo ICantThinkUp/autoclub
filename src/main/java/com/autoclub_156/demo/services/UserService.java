@@ -1,5 +1,6 @@
 package com.autoclub_156.demo.services;
 
+import com.autoclub_156.demo.controller.responses.UserResponse;
 import com.autoclub_156.demo.interfaces.CarRepository;
 import com.autoclub_156.demo.interfaces.RoleRepository;
 import com.autoclub_156.demo.interfaces.UserRepository;
@@ -44,6 +45,16 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public Boolean changePassword(String login, String oldPassword, String newPassword) {
+        User user = findByLoginAndPassword(login, oldPassword);
+        if (user != null) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            return true;
+        }
+        return false;
+    }
+
     public Boolean isLoginUsed(String login) {
         System.out.println(userRepository.findByLogin(login));
         return userRepository.findByLogin(login) != null;
@@ -85,10 +96,6 @@ public class UserService {
         User user = userRepository.findByLogin(login);
         for (int i = 0; i < user.getCars().size(); i++) {
             Car boundCar = user.getCars().get(i);
-
-            System.out.println("boundCar.getVincode() == vincode");
-            System.out.println(boundCar.getVincode() + " == " + vincode);
-
             if (boundCar.getVincode().equals(vincode)) {
                 user.getCars().remove(boundCar);
                 userRepository.save(user);
@@ -115,8 +122,21 @@ public class UserService {
         return cars.stream().anyMatch(x -> x.getVincode().equals(vincode)) || false;
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponse> getAllUsers() {
+        List<User> rawUsers = userRepository.findAll();
+        List<UserResponse> preparedUsers = new ArrayList<UserResponse>();
+
+        for (int i = 0; i < rawUsers.size(); i++) {
+            User currentUser = rawUsers.get(i);
+            preparedUsers.add(prepareUserToSend(currentUser));
+        }
+        return preparedUsers;
+    }
+
+    public UserResponse prepareUserToSend(User user) {
+        UserResponse preparedUser = new UserResponse(user.getLogin(), user.getName(),
+                user.getContactNumber(), user.getEmail());
+        return preparedUser;
     }
 
     public String getLoginOfSender(HttpServletRequest request) {

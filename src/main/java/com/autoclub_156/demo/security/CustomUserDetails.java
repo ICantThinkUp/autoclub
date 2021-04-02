@@ -32,9 +32,6 @@ public class CustomUserDetails implements UserDetails {
                 new SimpleGrantedAuthority(user.getRole().getName())
         );
 
-        System.out.println("In custom user details user is ");
-        System.out.println(u);
-
         return u;
     }
 

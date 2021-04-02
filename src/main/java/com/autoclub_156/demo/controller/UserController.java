@@ -1,5 +1,7 @@
 package com.autoclub_156.demo.controller;
 
+import com.autoclub_156.demo.controller.requests.ChangePasswordRequest;
+import com.autoclub_156.demo.controller.responses.UserResponse;
 import com.autoclub_156.demo.interfaces.UserRepository;
 import com.autoclub_156.demo.model.Car;
 import com.autoclub_156.demo.model.User;
@@ -21,19 +23,21 @@ public class UserController {
     @Autowired UserService userService;
 
     @GetMapping("/users")
-    private ResponseEntity<List<User>> getUsers() {
+    private ResponseEntity<List<UserResponse>> getUsers() {
         return ResponseEntity.status(200).body(userService.getAllUsers());
     }
 
     @GetMapping("/user/{login}")
-    private ResponseEntity<User> getUser(@PathVariable String login) {
-        return ResponseEntity.status(200).body(userService.findByLogin(login));
+    private ResponseEntity<UserResponse> getUser(@PathVariable String login) {
+        User user = userService.findByLogin(login);
+        return ResponseEntity.status(200).body(new UserResponse(user.getLogin(),
+                user.getName(), user.getEmail(), user.getEmail()));
     }
 
     @PutMapping("/user/{login}/name")
     private ResponseEntity updateUsername(HttpServletRequest request, @PathVariable String login, @RequestBody String name) {
         if (userService.isSenderSameUser(request, login)) {
-            return ResponseEntity.status(400).build();
+            return ResponseEntity.status(403).build();
         }
         try {
             userService.editName(login, name);
@@ -44,13 +48,25 @@ public class UserController {
 
     }
 
+    @PutMapping("/user/{login}/password")
+    private ResponseEntity changePassword(HttpServletRequest request, @PathVariable String login, @RequestBody ChangePasswordRequest passwords) {
+        if (!userService.isSenderSameUser(request, login)) {
+            ResponseEntity.status(403).build();
+        }
+        Boolean isChangedPassword = userService.changePassword(login, passwords.oldPassword, passwords.newPassword);
+        if (isChangedPassword) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(403).build();
+    }
+
     @PutMapping("/user/{login}/contactNumber")
     private ResponseEntity updateContactNumber(HttpServletRequest request, @PathVariable String login, @RequestBody String contactNumber) {
         if (userService.isSenderSameUser(request, login)) {
             userService.editContactNumber(login, contactNumber);
             return ResponseEntity.ok().build();
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(403).build();
     }
 
     @PutMapping("/user/{login}/email")
@@ -59,7 +75,7 @@ public class UserController {
             userService.editEmail(login, email);
             return ResponseEntity.ok().build();
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(403).build();
     }
 
     @GetMapping("/user/{login}/cars")
@@ -68,25 +84,27 @@ public class UserController {
             List<Car> cars = userService.getCarsByLogin(login);
             return ResponseEntity.ok().body(userService.getCarsByLogin(login));
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(403).build();
     }
 
+    // привязка существубщей машины к пользователю
     @PutMapping("/user/{login}/car/{vincode}")
     private ResponseEntity addCar(HttpServletRequest request, @PathVariable String login, String vincode) {
         if (userService.isAdmin(request)) {
             userService.addCar(login, vincode);
             return ResponseEntity.ok().build();
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(403).build();
     }
 
+    // отвязка машины от пользователя
     @DeleteMapping("/user/{login}/car/{vincode}")
     private ResponseEntity deleteCar(HttpServletRequest request, @PathVariable String login, String vincode) {
         if (userService.isAdmin(request)) {
             userService.deleteCar(login, vincode);
             return ResponseEntity.ok().build();
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(403).build();
     }
 
     @DeleteMapping("/user/{login}")
@@ -95,6 +113,6 @@ public class UserController {
             userService.deleteUser(login);
             return ResponseEntity.ok().build();
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(403).build();
     }
 }
