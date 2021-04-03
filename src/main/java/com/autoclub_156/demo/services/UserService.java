@@ -77,7 +77,7 @@ public class UserService {
         return null;
     }
 
-    public ArrayList<Car> getCarsByLogin(String login) {
+    public ArrayList<Car> getCarsByLogin(String login) throws NullPointerException {
         return userRepository.findByLogin(login).getCars();
     }
 
@@ -134,8 +134,6 @@ public class UserService {
             }
             return true;
         } catch (NullPointerException ex) {
-            System.out.println("request");
-            System.out.println(request);
             return false;
         }
     }
@@ -181,5 +179,22 @@ public class UserService {
     public void deleteUser(String login) {
         User user = userRepository.findByLogin(login);
         userRepository.delete(user);
+    }
+
+    public boolean isTetheredCarToSender(HttpServletRequest request, String vincode) {
+        String loginOfSender = getLoginOfSender(request);
+
+        try {
+            ArrayList<Car> cars = getCarsByLogin(loginOfSender);
+
+            for (int i = 0; i < cars.size(); i++) {
+                if (cars.get(i).getVincode().equals(vincode)) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (NullPointerException ex) {
+            return false;
+        }
     }
 }

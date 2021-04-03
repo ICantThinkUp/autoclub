@@ -37,14 +37,14 @@ public class DemoApplication implements CommandLineRunner {
         roleRepository.save(new Role("ROLE_ADMIN"));
         roleRepository.save(new Role("ROLE_USER"));
  2
-*/
+
         Role roleAdmin = roleRepository.findRoleByName("ROLE_ADMIN");
         List<User> users = userRepository.findAll();
         for (int i = 0; i < users.size(); i++) {
             users.get(i).setRole(roleAdmin);
             userRepository.save(users.get(i));
         }
-
+*/
         System.out.println("VERS 4");
         System.out.println("User repositry");
         System.out.println(userRepository.findAll());

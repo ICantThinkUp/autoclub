@@ -10,18 +10,28 @@ public class CarService {
     @Autowired
     private CarRepository carRepository;
 
-    public Car saveCar(String vincode, String model, String transmission) {
+    public Boolean saveCar(String vincode, String model, String transmission) {
 
-        if (carRepository.getCarByVincode(vincode) != null) {
-            return null;
+        if (isCarExist(vincode)) {
+            return false;
         }
 
         Car car = new Car(vincode, model, transmission);
         car.setVincode(vincode);
         car.setModel(model);
         car.setTransmission(transmission);
-        return carRepository.save(car);
 
+        return true;
+
+    }
+
+    public Boolean isCarExist(String vincode) {
+        try {
+            getCar(vincode);
+            return true;
+        } catch (NullPointerException ex) {
+            return false;
+        }
     }
 
     public Boolean deleteCar(String vincode) {
@@ -29,45 +39,34 @@ public class CarService {
             carRepository.deleteCarByVincode(vincode);
             return true;
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
             return false;
         }
-
     }
 
-    public Boolean enableMaintenance(String vincode) {
+    public Boolean enableReminderAboutMaintenance(String vincode) {
         try {
             Car car = carRepository.getCarByVincode(vincode);
-
-            System.out.println("vin is");
-            System.out.println(vincode  );
-
-            System.out.println("car is");
-            System.out.println(car);
-
             car.setMaintenance(true);
             carRepository.save(car);
             return true;
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+        } catch (NullPointerException ex) {
             return false;
         }
-
     }
 
-    public Boolean disableMaintenance(String vincode) {
+    public Boolean disableReminderAboutMaintenance(String vincode) {
         try {
             Car car = carRepository.getCarByVincode(vincode);
             car.setMaintenance(false);
             carRepository.save(car);
             return true;
-        } catch (Exception ex) {
+        } catch (NullPointerException ex) {
             return false;
         }
 
     }
 
-    public Car getCar(String vincode) {
+    public Car getCar(String vincode) throws NullPointerException {
         return carRepository.getCarByVincode(vincode);
     }
 }
