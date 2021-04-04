@@ -1,11 +1,11 @@
 package com.autoclub_156.demo.controller;
 
-import com.autoclub_156.demo.controller.requests.AddCarRequest;
-import com.autoclub_156.demo.controller.requests.BindCarRequest;
+import com.autoclub_156.demo.controller.requests.*;
 import com.autoclub_156.demo.model.Car;
 import com.autoclub_156.demo.security.CustomUserDetails;
 import com.autoclub_156.demo.services.CarService;
 import com.autoclub_156.demo.services.UserService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -66,14 +66,41 @@ public class CarController {
     }
 
     @PutMapping("/cars/{vincode}/transmission")
-    public ResponseEntity setCarTransmission(HttpServletRequest request, @PathVariable String vincode) {
-        carService.setTransmission(vincode, transmissionRequest);
-        // допилить с другими полями
+    public ResponseEntity setTransmission(HttpServletRequest request, @PathVariable TransmissionChangeRequest transmissionChangeRequest) {
+        if (!userService.isAdmin(request)) {
+            return ResponseEntity.status(403).build();
+        }
+
+        carService.setTransmission(transmissionChangeRequest.vincode, transmissionChangeRequest.transmission);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/cars/{vincode}/model")
+    public ResponseEntity setModel(HttpServletRequest request, @PathVariable String vincode, @RequestBody ModelChangeRequest modelChangeRequest) {
+        if (!userService.isAdmin(request)) {
+            return ResponseEntity.status(403).build();
+        }
+
+        carService.setModel(vincode, modelChangeRequest.model);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/cars/{vincode}/model")
+    public ResponseEntity setVincode(HttpServletRequest request, @PathVariable String vincode, @RequestBody VincodeChangeRequest vincodeChangeRequest) {
+        if (!userService.isAdmin(request)) {
+            return ResponseEntity.status(403).build();
+        }
+
+        carService.setVincode(vincode, vincodeChangeRequest.vincode);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/cars/{vincode}")
-    public Boolean deleteCar(@PathVariable String vincode) {
-        return carService.deleteCar(vincode);
+    public ResponseEntity deleteCar(HttpServletRequest request, @PathVariable String vincode) {
+        if (!userService.isAdmin(request)) {
+            return ResponseEntity.status(403).build();
+        }
+        carService.deleteCar(vincode);
+        return ResponseEntity.ok().build();
     }
-
 }

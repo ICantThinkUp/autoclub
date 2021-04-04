@@ -82,4 +82,24 @@ public class CarService {
     public Car getCar(String vincode) throws NullPointerException {
         return carRepository.getCarByVincode(vincode);
     }
+
+    public Boolean setModel(String vincode, String model) {
+        try {
+            Car car = carRepository.getCarByVincode(vincode);
+            car.setModel(model);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    public Boolean setVincode(String vincode, String newVincode) {
+        try {
+            Car car = carRepository.getCarByVincode(vincode);
+            car.setVincode(newVincode);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
 }

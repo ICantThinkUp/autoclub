@@ -3,6 +3,7 @@
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/model/User.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/interfaces/ServiceEntryRepository.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/requests/ChangePasswordRequest.java
+/home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/requests/ModelChangeRequest.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/responses/AuthResponse.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/UserController.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/interfaces/RoleRepository.java
@@ -18,6 +19,7 @@
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/services/CarService.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/security/jwt/JwtProvider.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/requests/AddCarRequest.java
+/home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/requests/VincodeChangeRequest.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/interfaces/UserRepository.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/security/SecurityCofigurer.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/security/CustomUserDetails.java
@@ -29,3 +31,4 @@
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/CarController.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/security/jwt/JwtFilter.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/model/ServiceEntry.java
+/home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/requests/TransmissionChangeRequest.java
