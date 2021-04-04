@@ -192,6 +192,7 @@ public class UserService {
                     return true;
                 }
             }
+
             return false;
         } catch (NullPointerException ex) {
             return false;
