@@ -23,18 +23,21 @@ public class CarController {
     @Autowired
     CarService carService;
 
-    @PostMapping("/admin/cars")
-    public ResponseEntity addCar(@RequestBody AddCarRequest addCarRequest)
+    @PostMapping("/cars")
+    public ResponseEntity addCar(HttpServletRequest request, @RequestBody AddCarRequest addCarRequest)
     {
-        Boolean isCarCreated = carService.saveCar(addCarRequest.vincode, addCarRequest.model,
-                addCarRequest.transmission);
-        if (isCarCreated) {
-            return ResponseEntity.status(201).build();
+        if (userService.isAdmin(request)) {
+            Boolean isCarSaved = carService.saveCar(addCarRequest.vincode, addCarRequest.model,
+                    addCarRequest.transmission);
+            if (isCarSaved) {
+                return ResponseEntity.status(201).build();
+            }
+            return ResponseEntity.status(208).build();
         }
         return ResponseEntity.status(403).build();
     }
 
-    @GetMapping("/user/car/{vincode}")
+    @GetMapping("/cars/{vincode}")
     public ResponseEntity getCarByVin(HttpServletRequest request, @PathVariable String vincode) {
         if (userService.isTetheredCarToSender(request, vincode) || userService.isAdmin(request)) {
             return ResponseEntity.ok(carService.getCar(vincode));
@@ -42,22 +45,33 @@ public class CarController {
         return ResponseEntity.status(403).build();
     }
 
-    @PostMapping("/admin/enableMaintenance")
-    public Boolean enableMaintenance(@RequestBody AddCarRequest request) {
-        return carService.enableReminderAboutMaintenance(request.vincode);
+    /*
+    * Этот метод стоит закинуть в UserController, чтобы клиентам
+    * приходили персональные напоминания
+    * (уточнить)
+    * */
+    @PutMapping("/cars/{vincode}/maintenance/?trigger={value}")
+    public ResponseEntity enableMaintenance(HttpServletRequest request, @RequestBody AddCarRequest addCarRequest, @PathVariable String value) {
+        if (!userService.isAdmin(request)) {
+            return ResponseEntity.status(403).build();
+        }
+
+        if (value.equals("1")) {
+            carService.enableReminderAboutMaintenance(addCarRequest.vincode);
+        } else {
+            carService.disableReminderAboutMaintenance(addCarRequest.vincode);
+        }
+
+        return ResponseEntity.status(202).build();
     }
 
-    @PostMapping("/admin/disableMaintenance")
-    public Boolean disableMaintenance(@RequestBody AddCarRequest request) {
-        return carService.disableReminderAboutMaintenance(request.vincode);
+    @PutMapping("/cars/{vincode}/transmission")
+    public ResponseEntity setCarTransmission(HttpServletRequest request, @PathVariable String vincode) {
+        carService.setTransmission(vincode, transmissionRequest);
+        // допилить с другими полями
     }
 
-    @PostMapping("/admin/updateCar")
-    public String updateCar() {
-        return "Not implemented";
-    }
-
-    @DeleteMapping("/admin/deleteCar/{vincode}")
+    @DeleteMapping("/cars/{vincode}")
     public Boolean deleteCar(@PathVariable String vincode) {
         return carService.deleteCar(vincode);
     }

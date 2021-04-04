@@ -2,8 +2,11 @@ package com.autoclub_156.demo.services;
 
 import com.autoclub_156.demo.interfaces.CarRepository;
 import com.autoclub_156.demo.model.Car;
+import com.autoclub_156.demo.model.ServiceEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 @Service
 public class CarService {
@@ -30,6 +33,16 @@ public class CarService {
             getCar(vincode);
             return true;
         } catch (NullPointerException ex) {
+            return false;
+        }
+    }
+
+    public Boolean setTransmission(String vincode, String newValueOfTransmission) {
+        try {
+            Car car = carRepository.getCarByVincode(vincode);
+            car.setTransmission(newValueOfTransmission);
+            return true;
+        } catch (Exception ex) {
             return false;
         }
     }
