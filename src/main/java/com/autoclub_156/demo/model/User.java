@@ -41,7 +41,7 @@ public class User {
     }
 
     public User() {
-
+        this.cars = new ArrayList<>();
     }
 
     @Override

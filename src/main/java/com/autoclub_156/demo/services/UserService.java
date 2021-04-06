@@ -16,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -160,20 +161,55 @@ public class UserService {
         return false;
     }
 
-    public void addCar(String login, String vincode) {
-        User user = userRepository.findByLogin(login);
-        ArrayList<Car> cars = user.getCars();
-        Car newCar = carRepository.getCarByVincode(vincode);
-        cars.add(newCar);
-        userRepository.save(user);
+    public Boolean addCar(String login, String vincode) {
+        try {
+            User user = userRepository.findByLogin(login);
+            ArrayList<Car> cars = user.getCars();
+            Car newCar = carRepository.getCarByVincode(vincode);
+            cars.add(newCar);
+            userRepository.save(user);
+            return true;
+        } catch (NullPointerException ex) {
+            return false;
+        }
     }
 
-    public void deleteCar(String login, String vincode) {
-        User user = userRepository.findByLogin(login);
-        ArrayList<Car> cars = user.getCars();
-        Car deletingCar = carRepository.getCarByVincode(vincode);
-        cars.add(deletingCar);
-        userRepository.save(user);
+    public Boolean deleteCar(String login, String vincode) {
+        try {
+            User user = userRepository.findByLogin(login);
+            ArrayList<Car> carsOfUser = user.getCars();
+            Car deletingCar = carRepository.getCarByVincode(vincode);
+
+            Boolean isCarTethered = isTheCarInList(carsOfUser, deletingCar);
+
+            if (isCarTethered) {
+                int indexOfDeletingCar = getIndexOfCar(carsOfUser, deletingCar);
+                carsOfUser.remove(indexOfDeletingCar);
+                userRepository.save(user);
+                return true;
+            }
+            return false;
+        } catch (NullPointerException ex) {
+            return false;
+        }
+    }
+
+    private int getIndexOfCar(ArrayList<Car> cars, Car car) {
+        for (int i = 0; i < cars.size(); i++) {
+            if (cars.get(i).getVincode().equals(car.getVincode())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private Boolean isTheCarInList(ArrayList<Car> cars, Car car) {
+        for (int i = 0; i < cars.size(); i++) {
+            if (cars.get(i).getVincode().equals(car.getVincode())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void deleteUser(String login) {
@@ -183,17 +219,10 @@ public class UserService {
 
     public boolean isTetheredCarToSender(HttpServletRequest request, String vincode) {
         String loginOfSender = getLoginOfSender(request);
-
         try {
             ArrayList<Car> cars = getCarsByLogin(loginOfSender);
-
-            for (int i = 0; i < cars.size(); i++) {
-                if (cars.get(i).getVincode().equals(vincode)) {
-                    return true;
-                }
-            }
-
-            return false;
+            Car car = carRepository.getCarByVincode(vincode);
+            return isTheCarInList(cars, car);
         } catch (NullPointerException ex) {
             return false;
         }

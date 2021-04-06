@@ -100,8 +100,11 @@ public class UserController {
     @PutMapping("/user/{login}/car/{vincode}")
     private ResponseEntity addCar(HttpServletRequest request, @PathVariable BindCarToUserResponse bindCarToUserResponse) {
         if (userService.isAdmin(request)) {
-            userService.addCar(bindCarToUserResponse.login, bindCarToUserResponse.vincode);
-            return ResponseEntity.ok().build();
+            Boolean isCarAdded = userService.addCar(bindCarToUserResponse.login, bindCarToUserResponse.vincode);
+            if (isCarAdded) {
+                return ResponseEntity.ok().build();
+            }
+            return ResponseEntity.status(404).build();
         }
         return ResponseEntity.status(403).build();
     }
@@ -110,8 +113,11 @@ public class UserController {
     @DeleteMapping("/user/{login}/car/{vincode}")
     private ResponseEntity deleteCar(HttpServletRequest request, @PathVariable BindCarToUserResponse bindCarToUserResponse) {
         if (userService.isAdmin(request)) {
-            userService.deleteCar(bindCarToUserResponse.login, bindCarToUserResponse.vincode);
-            return ResponseEntity.ok().build();
+            Boolean isCarDeleted = userService.deleteCar(bindCarToUserResponse.login, bindCarToUserResponse.vincode);
+            if (isCarDeleted) {
+                return ResponseEntity.ok().build();
+            }
+            return ResponseEntity.status(404).build();
         }
         return ResponseEntity.status(403).build();
     }
