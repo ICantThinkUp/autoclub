@@ -8,6 +8,7 @@ import com.autoclub_156.demo.interfaces.UserRepository;
 import com.autoclub_156.demo.model.Car;
 import com.autoclub_156.demo.model.User;
 import com.autoclub_156.demo.security.CustomUserDetails;
+import com.autoclub_156.demo.services.CarService;
 import com.autoclub_156.demo.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import java.util.List;
 public class UserController {
 
     @Autowired UserService userService;
+    @Autowired CarService carService;
 
     @GetMapping("/users")
     private ResponseEntity<List<UserResponse>> getUsers() {
@@ -91,7 +93,7 @@ public class UserController {
     private ResponseEntity getCars(HttpServletRequest request, @PathVariable String login) {
         if (userService.isSenderSameUser(request, login) || userService.isAdmin(request)) {
             List<Car> cars = userService.getCarsByLogin(login);
-            return ResponseEntity.ok().body(userService.getCarsByLogin(login));
+            return ResponseEntity.ok().body(cars);
         }
         return ResponseEntity.status(403).build();
     }
@@ -99,38 +101,35 @@ public class UserController {
     // привязка существубщей машины к пользователю
     @PutMapping("/user/{login}/car/{vincode}")
     private ResponseEntity addCar(HttpServletRequest request, @PathVariable BindCarToUserResponse bindCarToUserResponse) {
-        if (userService.isAdmin(request)) {
-            Boolean isCarAdded = userService.addCar(bindCarToUserResponse.login, bindCarToUserResponse.vincode);
-            if (isCarAdded) {
-                return ResponseEntity.ok().build();
-            }
+        if (!userService.isAdmin(request)) {
+            return ResponseEntity.status(403).build();
+        }
+        if (!carService.isCarExist(bindCarToUserResponse.vincode)) {
             return ResponseEntity.status(404).build();
         }
-        return ResponseEntity.status(403).build();
+        userService.addCar(bindCarToUserResponse.login, bindCarToUserResponse.vincode);
+        return ResponseEntity.status(200).build();
     }
 
     // отвязка машины от пользователя
     @DeleteMapping("/user/{login}/car/{vincode}")
     private ResponseEntity deleteCar(HttpServletRequest request, @PathVariable BindCarToUserResponse bindCarToUserResponse) {
-        if (userService.isAdmin(request)) {
-            Boolean isCarDeleted = userService.deleteCar(bindCarToUserResponse.login, bindCarToUserResponse.vincode);
-            if (isCarDeleted) {
-                return ResponseEntity.ok().build();
-            }
+        if (carService.isCarExist(bindCarToUserResponse.vincode) && userService.isAdmin(request)) {
+            userService.deleteCar(bindCarToUserResponse.login, bindCarToUserResponse.vincode);
+            return ResponseEntity.ok().build();
+        } else if (!carService.isCarExist(bindCarToUserResponse.vincode)) {
             return ResponseEntity.status(404).build();
+        } else {
+            return ResponseEntity.status(403).build();
         }
-        return ResponseEntity.status(403).build();
     }
 
     @DeleteMapping("/user/{login}")
     private ResponseEntity deleteUser(HttpServletRequest request, @PathVariable String login) {
-        System.out.println("delete the user run");
-
         if (userService.isSenderSameUser(request, login) || userService.isAdmin(request)) {
             userService.deleteUser(login);
             return ResponseEntity.ok().build();
         }
-        System.out.println("Delete user не прошел по условию на того же юзера или админа");
         return ResponseEntity.status(403).build();
     }
 }

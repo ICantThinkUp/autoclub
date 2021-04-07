@@ -14,92 +14,60 @@ public class CarService {
     private CarRepository carRepository;
 
     public Boolean saveCar(String vincode, String model, String transmission) {
-
-        if (isCarExist(vincode)) {
-            return false;
-        }
-
         Car car = new Car(vincode, model, transmission);
         car.setVincode(vincode);
         car.setModel(model);
         car.setTransmission(transmission);
-
+        carRepository.save(car);
         return true;
 
     }
 
     public Boolean isCarExist(String vincode) {
         try {
-            getCar(vincode);
-            return true;
+            Car car = carRepository.getCarByVincode(vincode);
+            if (!(car == null)) {
+                return true;
+            }
+            return false;
         } catch (NullPointerException ex) {
             return false;
         }
     }
 
-    public Boolean setTransmission(String vincode, String newValueOfTransmission) {
-        try {
-            Car car = carRepository.getCarByVincode(vincode);
-            car.setTransmission(newValueOfTransmission);
-            return true;
-        } catch (Exception ex) {
-            return false;
-        }
+    public void setTransmission(String vincode, String newValueOfTransmission) {
+        Car car = carRepository.getCarByVincode(vincode);
+        car.setTransmission(newValueOfTransmission);
     }
 
-    public Boolean deleteCar(String vincode) {
-        try {
-            carRepository.deleteCarByVincode(vincode);
-            return true;
-        } catch (Exception ex) {
-            return false;
-        }
+    public void deleteCar(String vincode) {
+        carRepository.deleteCarByVincode(vincode);
     }
 
-    public Boolean enableReminderAboutMaintenance(String vincode) {
-        try {
-            Car car = carRepository.getCarByVincode(vincode);
-            car.setMaintenance(true);
-            carRepository.save(car);
-            return true;
-        } catch (NullPointerException ex) {
-            return false;
-        }
+    public void enableReminderAboutMaintenance(String vincode) {
+        Car car = carRepository.getCarByVincode(vincode);
+        car.setMaintenance(true);
+        carRepository.save(car);
     }
 
-    public Boolean disableReminderAboutMaintenance(String vincode) {
-        try {
-            Car car = carRepository.getCarByVincode(vincode);
-            car.setMaintenance(false);
-            carRepository.save(car);
-            return true;
-        } catch (NullPointerException ex) {
-            return false;
-        }
-
+    public void disableReminderAboutMaintenance(String vincode) {
+        Car car = carRepository.getCarByVincode(vincode);
+        car.setMaintenance(false);
+        carRepository.save(car);
     }
 
-    public Car getCar(String vincode) throws NullPointerException {
-        return carRepository.getCarByVincode(vincode);
+    public Car getCar(String vincode) {
+        Car car = carRepository.getCarByVincode(vincode);
+        return car;
     }
 
-    public Boolean setModel(String vincode, String model) {
-        try {
-            Car car = carRepository.getCarByVincode(vincode);
-            car.setModel(model);
-            return true;
-        } catch (Exception ex) {
-            return false;
-        }
+    public void setModel(String vincode, String model) {
+        Car car = carRepository.getCarByVincode(vincode);
+        car.setModel(model);
     }
 
-    public Boolean setVincode(String vincode, String newVincode) {
-        try {
-            Car car = carRepository.getCarByVincode(vincode);
-            car.setVincode(newVincode);
-            return true;
-        } catch (Exception ex) {
-            return false;
-        }
+    public void setVincode(String vincode, String newVincode) {
+        Car car = carRepository.getCarByVincode(vincode);
+        car.setVincode(newVincode);
     }
 }

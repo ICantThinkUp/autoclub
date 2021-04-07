@@ -39,7 +39,8 @@ public class CarController {
 
     @GetMapping("/cars/{vincode}")
     public ResponseEntity getCarByVin(HttpServletRequest request, @PathVariable String vincode) {
-        if (userService.isTetheredCarToSender(request, vincode) || userService.isAdmin(request)) {
+        if (carService.isCarExist(vincode) && (
+                userService.isTetheredCarToSender(request, vincode) || userService.isAdmin(request))) {
             return ResponseEntity.ok(carService.getCar(vincode));
         }
         return ResponseEntity.status(403).build();
@@ -50,10 +51,14 @@ public class CarController {
     * приходили персональные напоминания
     * (уточнить)
     * */
-    @PutMapping("/cars/{vincode}/maintenance/?trigger={value}")
+    @PutMapping("/cars/{vincode}/maintenance/?mode={value}")
     public ResponseEntity enableMaintenance(HttpServletRequest request, @RequestBody AddCarRequest addCarRequest, @PathVariable String value) {
         if (!userService.isAdmin(request)) {
             return ResponseEntity.status(403).build();
+        }
+
+        if (!carService.isCarExist(addCarRequest.vincode)) {
+            return ResponseEntity.status(404).build();
         }
 
         if (value.equals("1")) {
@@ -71,6 +76,10 @@ public class CarController {
             return ResponseEntity.status(403).build();
         }
 
+        if (!carService.isCarExist(transmissionChangeRequest.vincode)) {
+            return ResponseEntity.status(404).build();
+        }
+
         carService.setTransmission(transmissionChangeRequest.vincode, transmissionChangeRequest.transmission);
         return ResponseEntity.ok().build();
     }
@@ -81,14 +90,22 @@ public class CarController {
             return ResponseEntity.status(403).build();
         }
 
+        if (!carService.isCarExist(vincode)) {
+            return ResponseEntity.status(404).build();
+        }
+
         carService.setModel(vincode, modelChangeRequest.model);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/cars/{vincode}/model")
+    @PutMapping("/cars/{vincode}/vincode")
     public ResponseEntity setVincode(HttpServletRequest request, @PathVariable String vincode, @RequestBody VincodeChangeRequest vincodeChangeRequest) {
         if (!userService.isAdmin(request)) {
             return ResponseEntity.status(403).build();
+        }
+
+        if (!carService.isCarExist(vincode)) {
+            return ResponseEntity.status(404).build();
         }
 
         carService.setVincode(vincode, vincodeChangeRequest.vincode);
@@ -100,6 +117,11 @@ public class CarController {
         if (!userService.isAdmin(request)) {
             return ResponseEntity.status(403).build();
         }
+
+        if (!carService.isCarExist(vincode)) {
+            return ResponseEntity.status(404).build();
+        }
+
         carService.deleteCar(vincode);
         return ResponseEntity.ok().build();
     }

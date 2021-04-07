@@ -174,23 +174,17 @@ public class UserService {
         }
     }
 
-    public Boolean deleteCar(String login, String vincode) {
-        try {
-            User user = userRepository.findByLogin(login);
-            ArrayList<Car> carsOfUser = user.getCars();
-            Car deletingCar = carRepository.getCarByVincode(vincode);
+    public void deleteCar(String login, String vincode) {
+        User user = userRepository.findByLogin(login);
+        ArrayList<Car> carsOfUser = user.getCars();
+        Car deletingCar = carRepository.getCarByVincode(vincode);
 
-            Boolean isCarTethered = isTheCarInList(carsOfUser, deletingCar);
+        Boolean isCarTethered = isTheCarInList(carsOfUser, deletingCar);
 
-            if (isCarTethered) {
-                int indexOfDeletingCar = getIndexOfCar(carsOfUser, deletingCar);
-                carsOfUser.remove(indexOfDeletingCar);
-                userRepository.save(user);
-                return true;
-            }
-            return false;
-        } catch (NullPointerException ex) {
-            return false;
+        if (isCarTethered) {
+            int indexOfDeletingCar = getIndexOfCar(carsOfUser, deletingCar);
+            carsOfUser.remove(indexOfDeletingCar);
+            userRepository.save(user);
         }
     }
 
