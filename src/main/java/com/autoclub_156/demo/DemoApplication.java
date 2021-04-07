@@ -1,5 +1,6 @@
 package com.autoclub_156.demo;
 
+import com.autoclub_156.demo.interfaces.CarRepository;
 import com.autoclub_156.demo.interfaces.RoleRepository;
 import com.autoclub_156.demo.interfaces.UserRepository;
 import com.autoclub_156.demo.model.Role;
@@ -23,6 +24,9 @@ public class DemoApplication implements CommandLineRunner {
     @Autowired
     RoleRepository roleRepository;
 
+    @Autowired
+    CarRepository carRepository;
+
     public static void main(String[] args) {
 
         SpringApplication.run(DemoApplication.class, args);
@@ -44,13 +48,19 @@ public class DemoApplication implements CommandLineRunner {
             users.get(i).setRole(roleAdmin);
             userRepository.save(users.get(i));
         }
+
+
 */
+
         System.out.println("VERS 4");
         System.out.println("User repositry");
         System.out.println(userRepository.findAll());
 
         System.out.println("Roles");
         System.out.println(roleRepository.findAll());
+
+        System.out.println("Cars");
+        System.out.println(carRepository.findAll());
 
     }
 }

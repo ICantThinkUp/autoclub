@@ -26,15 +26,15 @@ public class CarController {
     @PostMapping("/cars")
     public ResponseEntity addCar(HttpServletRequest request, @RequestBody AddCarRequest addCarRequest)
     {
-        if (userService.isAdmin(request)) {
-            Boolean isCarSaved = carService.saveCar(addCarRequest.vincode, addCarRequest.model,
-                    addCarRequest.transmission);
-            if (isCarSaved) {
-                return ResponseEntity.status(201).build();
-            }
+        if (carService.isCarExist(addCarRequest.vincode)) {
             return ResponseEntity.status(208).build();
         }
-        return ResponseEntity.status(403).build();
+        if (!userService.isAdmin(request)) {
+            return ResponseEntity.status(403).build();
+        }
+        carService.saveCar(addCarRequest.vincode, addCarRequest.model,
+                addCarRequest.transmission);
+        return ResponseEntity.status(201).build();
     }
 
     @GetMapping("/cars/{vincode}")
@@ -50,26 +50,33 @@ public class CarController {
     * Этот метод стоит закинуть в UserController, чтобы клиентам
     * приходили персональные напоминания
     * (уточнить)
+    *
+    * ПЕРЕПРОВЕРИТЬ
+    *
     * */
-    @PutMapping("/cars/{vincode}/maintenance/?mode={value}")
-    public ResponseEntity enableMaintenance(HttpServletRequest request, @RequestBody AddCarRequest addCarRequest, @PathVariable String value) {
+    @PutMapping("/cars/{vincode}/maintenance?enable={enable}")
+    public ResponseEntity enableMaintenance(HttpServletRequest request, @PathVariable String vincode, @PathVariable Boolean enable) {
         if (!userService.isAdmin(request)) {
             return ResponseEntity.status(403).build();
         }
 
-        if (!carService.isCarExist(addCarRequest.vincode)) {
+        if (!carService.isCarExist(vincode)) {
             return ResponseEntity.status(404).build();
         }
 
-        if (value.equals("1")) {
-            carService.enableReminderAboutMaintenance(addCarRequest.vincode);
+        if (enable) {
+            carService.enableReminderAboutMaintenance(vincode);
         } else {
-            carService.disableReminderAboutMaintenance(addCarRequest.vincode);
+            carService.disableReminderAboutMaintenance(vincode);
         }
 
-        return ResponseEntity.status(202).build();
+        return ResponseEntity.status(200).build();
     }
 
+    // не работает
+    /*
+    * WARN 1 --- [nio-8080-exec-4] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.bind.MissingPathVariableException: Missing URI template variable 'transmissionChangeRequest' for method parameter of type TransmissionChangeRequest]
+     */
     @PutMapping("/cars/{vincode}/transmission")
     public ResponseEntity setTransmission(HttpServletRequest request, @PathVariable TransmissionChangeRequest transmissionChangeRequest) {
         if (!userService.isAdmin(request)) {
@@ -100,6 +107,7 @@ public class CarController {
 
     @PutMapping("/cars/{vincode}/vincode")
     public ResponseEntity setVincode(HttpServletRequest request, @PathVariable String vincode, @RequestBody VincodeChangeRequest vincodeChangeRequest) {
+      // на самом деле не мнгяется
         if (!userService.isAdmin(request)) {
             return ResponseEntity.status(403).build();
         }
@@ -114,6 +122,14 @@ public class CarController {
 
     @DeleteMapping("/cars/{vincode}")
     public ResponseEntity deleteCar(HttpServletRequest request, @PathVariable String vincode) {
+
+        /*
+        * at com.sun.proxy.$Proxy65.deleteCarByVincode(Unknown Source) ~[na:na]
+autoclub__156_1  | 	at com.autoclub_156.demo.services.CarService.deleteCar(CarService.java:42) ~[classes!/:0.0.1-SNAPSHOT]
+autoclub__156_1  | 	at com.autoclub_156.demo.controller.CarController.deleteCar(CarController.java:125) ~[classes!/:0.0.1-SNAPSHOT]
+
+* */
+
         if (!userService.isAdmin(request)) {
             return ResponseEntity.status(403).build();
         }

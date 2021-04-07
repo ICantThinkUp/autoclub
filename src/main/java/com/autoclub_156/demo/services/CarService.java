@@ -13,14 +13,12 @@ public class CarService {
     @Autowired
     private CarRepository carRepository;
 
-    public Boolean saveCar(String vincode, String model, String transmission) {
+    public void saveCar(String vincode, String model, String transmission) {
         Car car = new Car(vincode, model, transmission);
         car.setVincode(vincode);
         car.setModel(model);
         car.setTransmission(transmission);
         carRepository.save(car);
-        return true;
-
     }
 
     public Boolean isCarExist(String vincode) {
