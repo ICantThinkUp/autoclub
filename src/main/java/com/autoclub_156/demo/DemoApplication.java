@@ -6,6 +6,8 @@ import com.autoclub_156.demo.interfaces.UserRepository;
 import com.autoclub_156.demo.model.Role;
 import com.autoclub_156.demo.model.User;
 import lombok.extern.java.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -61,6 +63,9 @@ public class DemoApplication implements CommandLineRunner {
 
         System.out.println("Cars");
         System.out.println(carRepository.findAll());
+
+        Logger logger = LoggerFactory.getLogger(DemoApplication.class);
+        logger.info("Log from {}", DemoApplication.class.getName());
 
     }
 }
