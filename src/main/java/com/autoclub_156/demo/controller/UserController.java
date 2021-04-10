@@ -10,6 +10,8 @@ import com.autoclub_156.demo.model.User;
 import com.autoclub_156.demo.security.CustomUserDetails;
 import com.autoclub_156.demo.services.CarService;
 import com.autoclub_156.demo.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -25,6 +27,8 @@ public class UserController {
 
     @Autowired UserService userService;
     @Autowired CarService carService;
+
+    private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/users")
     private ResponseEntity<List<UserResponse>> getUsers() {
@@ -63,7 +67,6 @@ public class UserController {
         if (!userService.isSenderSameUser(request, login)) {
             ResponseEntity.status(403).build();
         }
-        System.out.println("Try to change password...");
         Boolean isChangedPassword = userService.changePassword(login, passwords.oldPassword, passwords.newPassword);
         if (isChangedPassword) {
             return ResponseEntity.ok().build();
@@ -100,24 +103,24 @@ public class UserController {
 
     // привязка существубщей машины к пользователю
     @PutMapping("/user/{login}/car/{vincode}")
-    private ResponseEntity addCar(HttpServletRequest request, @PathVariable BindCarToUserResponse bindCarToUserResponse) {
+    private ResponseEntity addCar(HttpServletRequest request, @PathVariable String login, @PathVariable String vincode) {
         if (!userService.isAdmin(request)) {
             return ResponseEntity.status(403).build();
         }
-        if (!carService.isCarExist(bindCarToUserResponse.vincode)) {
+        if (!carService.isCarExist(vincode)) {
             return ResponseEntity.status(404).build();
         }
-        userService.addCar(bindCarToUserResponse.login, bindCarToUserResponse.vincode);
+        userService.addCar(login, vincode);
         return ResponseEntity.status(200).build();
     }
 
     // отвязка машины от пользователя
     @DeleteMapping("/user/{login}/car/{vincode}")
-    private ResponseEntity deleteCar(HttpServletRequest request, @PathVariable BindCarToUserResponse bindCarToUserResponse) {
-        if (carService.isCarExist(bindCarToUserResponse.vincode) && userService.isAdmin(request)) {
-            userService.deleteCar(bindCarToUserResponse.login, bindCarToUserResponse.vincode);
+    private ResponseEntity deleteCar(HttpServletRequest request, @PathVariable String login, @PathVariable String vincode) {
+        if (carService.isCarExist(vincode) && userService.isAdmin(request)) {
+            userService.deleteCar(login, vincode);
             return ResponseEntity.ok().build();
-        } else if (!carService.isCarExist(bindCarToUserResponse.vincode)) {
+        } else if (!carService.isCarExist(vincode)) {
             return ResponseEntity.status(404).build();
         } else {
             return ResponseEntity.status(403).build();

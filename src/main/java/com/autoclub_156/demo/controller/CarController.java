@@ -6,6 +6,8 @@ import com.autoclub_156.demo.security.CustomUserDetails;
 import com.autoclub_156.demo.services.CarService;
 import com.autoclub_156.demo.services.UserService;
 import org.apache.coyote.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -22,6 +24,8 @@ public class CarController {
 
     @Autowired
     CarService carService;
+
+    private final Logger logger = LoggerFactory.getLogger(CarController.class);
 
     @PostMapping("/cars")
     public ResponseEntity addCar(HttpServletRequest request, @RequestBody AddCarRequest addCarRequest)
@@ -51,11 +55,16 @@ public class CarController {
     * приходили персональные напоминания
     * (уточнить)
     *
-    * ПЕРЕПРОВЕРИТЬ
+    * выкидывает 404
     *
     * */
     @PutMapping("/cars/{vincode}/maintenance?enable={enable}")
     public ResponseEntity enableMaintenance(HttpServletRequest request, @PathVariable String vincode, @PathVariable Boolean enable) {
+
+        logger.info("maintanense with " + enable + " start");
+        logger.info("isAdmin " + userService.isAdmin(request));
+        logger.info("isCarExist  " + carService.isCarExist(vincode));
+
         if (!userService.isAdmin(request)) {
             return ResponseEntity.status(403).build();
         }
@@ -63,6 +72,7 @@ public class CarController {
         if (!carService.isCarExist(vincode)) {
             return ResponseEntity.status(404).build();
         }
+
 
         if (enable) {
             carService.enableReminderAboutMaintenance(vincode);
@@ -73,24 +83,22 @@ public class CarController {
         return ResponseEntity.status(200).build();
     }
 
-    // не работает
-    /*
-    * WARN 1 --- [nio-8080-exec-4] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.bind.MissingPathVariableException: Missing URI template variable 'transmissionChangeRequest' for method parameter of type TransmissionChangeRequest]
-     */
+    // не меняются значения
     @PutMapping("/cars/{vincode}/transmission")
-    public ResponseEntity setTransmission(HttpServletRequest request, @PathVariable TransmissionChangeRequest transmissionChangeRequest) {
+    public ResponseEntity setTransmission(HttpServletRequest request, @PathVariable String vincode, @RequestBody TransmissionChangeRequest transmissionChangeRequest) {
         if (!userService.isAdmin(request)) {
             return ResponseEntity.status(403).build();
         }
 
-        if (!carService.isCarExist(transmissionChangeRequest.vincode)) {
+        if (!carService.isCarExist(vincode)) {
             return ResponseEntity.status(404).build();
         }
 
-        carService.setTransmission(transmissionChangeRequest.vincode, transmissionChangeRequest.transmission);
+        carService.setTransmission(vincode, transmissionChangeRequest.transmission);
         return ResponseEntity.ok().build();
     }
 
+    // не меняется, кидает 200
     @PutMapping("/cars/{vincode}/model")
     public ResponseEntity setModel(HttpServletRequest request, @PathVariable String vincode, @RequestBody ModelChangeRequest modelChangeRequest) {
         if (!userService.isAdmin(request)) {
@@ -105,6 +113,7 @@ public class CarController {
         return ResponseEntity.ok().build();
     }
 
+    // не меняется, кидает 200
     @PutMapping("/cars/{vincode}/vincode")
     public ResponseEntity setVincode(HttpServletRequest request, @PathVariable String vincode, @RequestBody VincodeChangeRequest vincodeChangeRequest) {
       // на самом деле не мнгяется
@@ -120,6 +129,7 @@ public class CarController {
         return ResponseEntity.ok().build();
     }
 
+    // быкует на кукуюто булеву переменную
     @DeleteMapping("/cars/{vincode}")
     public ResponseEntity deleteCar(HttpServletRequest request, @PathVariable String vincode) {
 

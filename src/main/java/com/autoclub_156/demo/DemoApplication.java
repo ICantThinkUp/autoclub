@@ -65,7 +65,7 @@ public class DemoApplication implements CommandLineRunner {
         System.out.println(carRepository.findAll());
 
         Logger logger = LoggerFactory.getLogger(DemoApplication.class);
-        logger.info("Log from {}", DemoApplication.class.getName());
+        logger.info("RELOAD {}", DemoApplication.class.getName());
 
     }
 }

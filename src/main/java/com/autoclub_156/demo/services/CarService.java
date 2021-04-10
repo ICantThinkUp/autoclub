@@ -36,6 +36,7 @@ public class CarService {
     public void setTransmission(String vincode, String newValueOfTransmission) {
         Car car = carRepository.getCarByVincode(vincode);
         car.setTransmission(newValueOfTransmission);
+        carRepository.save(car);
     }
 
     public void deleteCar(String vincode) {
@@ -62,10 +63,12 @@ public class CarService {
     public void setModel(String vincode, String model) {
         Car car = carRepository.getCarByVincode(vincode);
         car.setModel(model);
+        carRepository.save(car);
     }
 
     public void setVincode(String vincode, String newVincode) {
         Car car = carRepository.getCarByVincode(vincode);
         car.setVincode(newVincode);
+        carRepository.save(car);
     }
 }

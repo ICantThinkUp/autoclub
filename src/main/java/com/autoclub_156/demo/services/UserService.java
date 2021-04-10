@@ -8,7 +8,7 @@ import com.autoclub_156.demo.model.Car;
 import com.autoclub_156.demo.model.Role;
 import com.autoclub_156.demo.model.User;
 import com.autoclub_156.demo.security.CustomUserDetails;
-import lombok.extern.java.Log;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,10 +20,10 @@ import javax.validation.constraints.Null;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 @Service
-@Log
 public class UserService {
     @Autowired
     private UserRepository userRepository;
@@ -36,6 +36,8 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    private final Logger logger = (Logger) LoggerFactory.getLogger(UserService.class);
 
     public User saveUser(String login, String password) {
         User user = new User();
@@ -179,7 +181,10 @@ public class UserService {
         ArrayList<Car> carsOfUser = user.getCars();
         Car deletingCar = carRepository.getCarByVincode(vincode);
 
-        Boolean isCarTethered = isTheCarInList(carsOfUser, deletingCar);
+        logger.info("Got car to delete " + deletingCar);
+        logger.info("From " + carsOfUser);
+
+        Boolean isCarTethered = isTheCarInUserList(carsOfUser, deletingCar);
 
         if (isCarTethered) {
             int indexOfDeletingCar = getIndexOfCar(carsOfUser, deletingCar);
@@ -191,18 +196,22 @@ public class UserService {
     private int getIndexOfCar(ArrayList<Car> cars, Car car) {
         for (int i = 0; i < cars.size(); i++) {
             if (cars.get(i).getVincode().equals(car.getVincode())) {
+                logger.info("Index of deleting car is " + i);
                 return i;
             }
         }
         return -1;
     }
 
-    private Boolean isTheCarInList(ArrayList<Car> cars, Car car) {
+    private Boolean isTheCarInUserList(ArrayList<Car> cars, Car car) {
+        logger.info("Check car in user list of car");
+        logger.info((Supplier<String>) cars);
         for (int i = 0; i < cars.size(); i++) {
             if (cars.get(i).getVincode().equals(car.getVincode())) {
                 return true;
             }
         }
+        logger.info("Car dont found in user list");
         return false;
     }
 
@@ -216,7 +225,7 @@ public class UserService {
         try {
             ArrayList<Car> cars = getCarsByLogin(loginOfSender);
             Car car = carRepository.getCarByVincode(vincode);
-            return isTheCarInList(cars, car);
+            return isTheCarInUserList(cars, car);
         } catch (NullPointerException ex) {
             return false;
         }
