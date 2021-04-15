@@ -29,6 +29,7 @@ com/autoclub_156/demo/controller/ServiceEntryController.class
 com/autoclub_156/demo/controller/AuthController.class
 com/autoclub_156/demo/interfaces/ServiceEntryRepository.class
 com/autoclub_156/demo/security/CustomUserDetails.class
+com/autoclub_156/demo/controller/requests/SearchRequest.class
 com/autoclub_156/demo/controller/responses/UserResponse.class
 com/autoclub_156/demo/controller/requests/RegistrationRequest.class
 com/autoclub_156/demo/security/CustomUserDetailsService.class

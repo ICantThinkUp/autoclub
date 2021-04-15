@@ -36,8 +36,7 @@ public class CarController {
         if (!userService.isAdmin(request)) {
             return ResponseEntity.status(403).build();
         }
-        carService.saveCar(addCarRequest.vincode, addCarRequest.model,
-                addCarRequest.transmission);
+        carService.saveCar(addCarRequest.vincode);
         return ResponseEntity.status(201).build();
     }
 
@@ -55,12 +54,13 @@ public class CarController {
     * приходили персональные напоминания
     * (уточнить)
     *
-    * выкидывает 404
+    * выкидывает 404!
     *
     * */
     @PutMapping("/cars/{vincode}/maintenance?enable={enable}")
-    public ResponseEntity enableMaintenance(HttpServletRequest request, @PathVariable String vincode, @PathVariable Boolean enable) {
+    public ResponseEntity enableMaintenance(HttpServletRequest request, @PathVariable String vincode, @PathVariable String enable) {
 
+        // логги не видятся
         logger.info("maintanense with " + enable + " start");
         logger.info("isAdmin " + userService.isAdmin(request));
         logger.info("isCarExist  " + carService.isCarExist(vincode));
@@ -73,8 +73,7 @@ public class CarController {
             return ResponseEntity.status(404).build();
         }
 
-
-        if (enable) {
+        if (enable.equals("1")) {
             carService.enableReminderAboutMaintenance(vincode);
         } else {
             carService.disableReminderAboutMaintenance(vincode);
@@ -83,7 +82,6 @@ public class CarController {
         return ResponseEntity.status(200).build();
     }
 
-    // не меняются значения
     @PutMapping("/cars/{vincode}/transmission")
     public ResponseEntity setTransmission(HttpServletRequest request, @PathVariable String vincode, @RequestBody TransmissionChangeRequest transmissionChangeRequest) {
         if (!userService.isAdmin(request)) {
@@ -98,7 +96,6 @@ public class CarController {
         return ResponseEntity.ok().build();
     }
 
-    // не меняется, кидает 200
     @PutMapping("/cars/{vincode}/model")
     public ResponseEntity setModel(HttpServletRequest request, @PathVariable String vincode, @RequestBody ModelChangeRequest modelChangeRequest) {
         if (!userService.isAdmin(request)) {
@@ -110,22 +107,6 @@ public class CarController {
         }
 
         carService.setModel(vincode, modelChangeRequest.model);
-        return ResponseEntity.ok().build();
-    }
-
-    // не меняется, кидает 200
-    @PutMapping("/cars/{vincode}/vincode")
-    public ResponseEntity setVincode(HttpServletRequest request, @PathVariable String vincode, @RequestBody VincodeChangeRequest vincodeChangeRequest) {
-      // на самом деле не мнгяется
-        if (!userService.isAdmin(request)) {
-            return ResponseEntity.status(403).build();
-        }
-
-        if (!carService.isCarExist(vincode)) {
-            return ResponseEntity.status(404).build();
-        }
-
-        carService.setVincode(vincode, vincodeChangeRequest.vincode);
         return ResponseEntity.ok().build();
     }
 

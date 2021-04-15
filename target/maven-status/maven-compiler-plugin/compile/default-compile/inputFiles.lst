@@ -1,5 +1,6 @@
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/security/CustomUserDetailsService.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/AuthController.java
+/home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/requests/SearchRequest.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/model/User.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/interfaces/ServiceEntryRepository.java
 /home/rootao/IdeaProjects/autoclub_156/src/main/java/com/autoclub_156/demo/controller/requests/ChangePasswordRequest.java

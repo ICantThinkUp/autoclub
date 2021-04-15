@@ -22,12 +22,9 @@ public class Car {
     private ArrayList<ServiceEntry> serviceBook;
     private Boolean maintenance;
 
-    public Car(String vincode, String model, String transmission) {
+    public Car(String vincode) {
         this.vincode = vincode;
-        this.model = model;
-        this.transmission = transmission;
         this.serviceBook = new ArrayList<>();
-        this.maintenance = false;
     }
 
     @Override

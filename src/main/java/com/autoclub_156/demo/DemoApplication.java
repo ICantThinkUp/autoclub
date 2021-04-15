@@ -38,34 +38,8 @@ public class DemoApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        // create admins (if down)
-/* 1      roleRepository.deleteAll();
-        roleRepository.save(new Role("ROLE_ADMIN"));
-        roleRepository.save(new Role("ROLE_USER"));
- 2
-
-        Role roleAdmin = roleRepository.findRoleByName("ROLE_ADMIN");
-        List<User> users = userRepository.findAll();
-        for (int i = 0; i < users.size(); i++) {
-            users.get(i).setRole(roleAdmin);
-            userRepository.save(users.get(i));
-        }
-
-
-*/
-
-        System.out.println("VERS 4");
-        System.out.println("User repositry");
-        System.out.println(userRepository.findAll());
-
-        System.out.println("Roles");
-        System.out.println(roleRepository.findAll());
-
-        System.out.println("Cars");
-        System.out.println(carRepository.findAll());
-
         Logger logger = LoggerFactory.getLogger(DemoApplication.class);
-        logger.info("RELOAD {}", DemoApplication.class.getName());
+        logger.info("Reload {}", DemoApplication.class.getName());
 
     }
 }

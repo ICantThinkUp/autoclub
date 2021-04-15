@@ -1,6 +1,7 @@
 package com.autoclub_156.demo.controller;
 
 import com.autoclub_156.demo.controller.requests.ChangePasswordRequest;
+import com.autoclub_156.demo.controller.requests.SearchRequest;
 import com.autoclub_156.demo.controller.responses.BindCarToUserResponse;
 import com.autoclub_156.demo.controller.responses.UpdateUsernameResponse;
 import com.autoclub_156.demo.controller.responses.UserResponse;
@@ -31,8 +32,15 @@ public class UserController {
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @GetMapping("/users")
-    private ResponseEntity<List<UserResponse>> getUsers() {
-        return ResponseEntity.status(200).body(userService.getAllUsers());
+    private ResponseEntity<List<UserResponse>> getUsers(@RequestParam SearchRequest searchRequest) {
+        int amount = searchRequest.amount;
+        int offset = searchRequest.offset;
+
+        ArrayList<UserResponse> users = userService.getAllUsers();
+
+        // IndexOutOfBoundsException
+
+        return ResponseEntity.status(200).body(users);
     }
 
     @GetMapping("/user/{login}")
@@ -40,9 +48,6 @@ public class UserController {
         System.out.println("get the user run");
 
         User user = userService.findByLogin(login);
-
-        System.out.println("user is");
-        System.out.println(user);
 
         return ResponseEntity.status(200).body(new UserResponse(user.getLogin(),
                 user.getName(), user.getEmail(), user.getEmail()));
@@ -95,8 +100,9 @@ public class UserController {
     @GetMapping("/user/{login}/cars")
     private ResponseEntity getCars(HttpServletRequest request, @PathVariable String login) {
         if (userService.isSenderSameUser(request, login) || userService.isAdmin(request)) {
-            List<Car> cars = userService.getCarsByLogin(login);
-            return ResponseEntity.ok().body(cars);
+            List<String> vincodesOfUserCars = userService.getCarsVincodesByLogin(login);
+            // добавить оффсет с количеством выдаваемых машин, принадлежащих одному юзерру
+            return ResponseEntity.ok().body(vincodesOfUserCars);
         }
         return ResponseEntity.status(403).build();
     }

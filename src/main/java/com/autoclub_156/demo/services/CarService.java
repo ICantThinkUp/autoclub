@@ -13,11 +13,9 @@ public class CarService {
     @Autowired
     private CarRepository carRepository;
 
-    public void saveCar(String vincode, String model, String transmission) {
-        Car car = new Car(vincode, model, transmission);
+    public void saveCar(String vincode) {
+        Car car = new Car(vincode);
         car.setVincode(vincode);
-        car.setModel(model);
-        car.setTransmission(transmission);
         carRepository.save(car);
     }
 
@@ -66,9 +64,4 @@ public class CarService {
         carRepository.save(car);
     }
 
-    public void setVincode(String vincode, String newVincode) {
-        Car car = carRepository.getCarByVincode(vincode);
-        car.setVincode(newVincode);
-        carRepository.save(car);
-    }
 }

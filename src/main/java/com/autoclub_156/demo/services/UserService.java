@@ -1,5 +1,6 @@
 package com.autoclub_156.demo.services;
 
+import com.autoclub_156.demo.controller.CarController;
 import com.autoclub_156.demo.controller.responses.UserResponse;
 import com.autoclub_156.demo.interfaces.CarRepository;
 import com.autoclub_156.demo.interfaces.RoleRepository;
@@ -8,6 +9,7 @@ import com.autoclub_156.demo.model.Car;
 import com.autoclub_156.demo.model.Role;
 import com.autoclub_156.demo.model.User;
 import com.autoclub_156.demo.security.CustomUserDetails;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.logging.Logger;
 
 @Service
 public class UserService {
@@ -37,7 +38,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private final Logger logger = (Logger) LoggerFactory.getLogger(UserService.class);
+    private final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public User saveUser(String login, String password) {
         User user = new User();
@@ -80,8 +81,14 @@ public class UserService {
         return null;
     }
 
-    public ArrayList<Car> getCarsByLogin(String login) throws NullPointerException {
-        return userRepository.findByLogin(login).getCars();
+    public ArrayList<String> getCarsVincodesByLogin(String login) throws NullPointerException {
+        ArrayList<String> carsVincodes = new ArrayList<String>();
+        User user = userRepository.findByLogin(login);
+        ArrayList<Car> cars = user.getCars();
+        for (Car car : cars) {
+            carsVincodes.add(car.getVincode());
+        }
+        return carsVincodes;
     }
 
     public Boolean isAccess(String login, String vincode) {
@@ -178,24 +185,23 @@ public class UserService {
 
     public void deleteCar(String login, String vincode) {
         User user = userRepository.findByLogin(login);
-        ArrayList<Car> carsOfUser = user.getCars();
-        Car deletingCar = carRepository.getCarByVincode(vincode);
+        ArrayList<String> carsVincodesOfUser = getCarsVincodesByLogin(login);
 
-        logger.info("Got car to delete " + deletingCar);
-        logger.info("From " + carsOfUser);
+        logger.info("Got car to delete " + vincode);
+        logger.info("From " + carsVincodesOfUser);
 
-        Boolean isCarTethered = isTheCarInUserList(carsOfUser, deletingCar);
+        Boolean isCarTethered = isTheCarInUserList(carsVincodesOfUser, vincode);
 
         if (isCarTethered) {
-            int indexOfDeletingCar = getIndexOfCar(carsOfUser, deletingCar);
-            carsOfUser.remove(indexOfDeletingCar);
+            int indexOfDeletingCar = getIndexOfCar(carsVincodesOfUser, vincode);
+            carsVincodesOfUser.remove(indexOfDeletingCar);
             userRepository.save(user);
         }
     }
 
-    private int getIndexOfCar(ArrayList<Car> cars, Car car) {
+    private int getIndexOfCar(ArrayList<String> cars, String car) {
         for (int i = 0; i < cars.size(); i++) {
-            if (cars.get(i).getVincode().equals(car.getVincode())) {
+            if (cars.get(i).equals(car)) {
                 logger.info("Index of deleting car is " + i);
                 return i;
             }
@@ -203,11 +209,10 @@ public class UserService {
         return -1;
     }
 
-    private Boolean isTheCarInUserList(ArrayList<Car> cars, Car car) {
+    private Boolean isTheCarInUserList(ArrayList<String> vincodes, String vincode) {
         logger.info("Check car in user list of car");
-        logger.info((Supplier<String>) cars);
-        for (int i = 0; i < cars.size(); i++) {
-            if (cars.get(i).getVincode().equals(car.getVincode())) {
+        for (int i = 0; i < vincodes.size(); i++) {
+            if (vincodes.get(i).equals(vincode)) {
                 return true;
             }
         }
@@ -223,9 +228,8 @@ public class UserService {
     public boolean isTetheredCarToSender(HttpServletRequest request, String vincode) {
         String loginOfSender = getLoginOfSender(request);
         try {
-            ArrayList<Car> cars = getCarsByLogin(loginOfSender);
-            Car car = carRepository.getCarByVincode(vincode);
-            return isTheCarInUserList(cars, car);
+            ArrayList<String> vincodes = getCarsVincodesByLogin(loginOfSender);
+            return isTheCarInUserList(vincodes, vincode);
         } catch (NullPointerException ex) {
             return false;
         }
